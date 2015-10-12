@@ -4,12 +4,11 @@ package com.sb.android.chatclient;
  * Created by Administrator on 2015-10-08.
  */
 public class ChatItem {
+    boolean isMe;
     String mDateTime;
     String mNickName;
-
-    boolean isMe;
-
     String mMessage;
+
     public String getmDateTime() {
         return mDateTime;
     }

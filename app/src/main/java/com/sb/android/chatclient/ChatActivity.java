@@ -51,12 +51,12 @@ public class ChatActivity extends AppCompatActivity {
                 chatItem.setmMessage(message);
                 mArrayList.add(chatItem);
 
-                ChatItem chatItem2= new ChatItem();
-                chatItem2.setmDateTime(Calendar.getInstance().getTime().toString());
-                chatItem2.setmNickName("maria");
-                chatItem2.setIsMe(false);
-                chatItem2.setmMessage(message);
-                mArrayList.add(chatItem2);
+//                ChatItem chatItem2= new ChatItem();
+//                chatItem2.setmDateTime(Calendar.getInstance().getTime().toString());
+//                chatItem2.setmNickName("maria");
+//                chatItem2.setIsMe(false);
+//                chatItem2.setmMessage(message);
+//                mArrayList.add(chatItem2);
 
                 //sends the message to the server
                 if (mTcpClient != null) {
@@ -76,7 +76,8 @@ public class ChatActivity extends AppCompatActivity {
         super.onPause();
 
         // disconnect
-        mTcpClient.stopClient();
+        //mTcpClient.stopClient();
+        mTcpClient.disconnect();
         mTcpClient = null;
 
     }
@@ -114,7 +115,8 @@ public class ChatActivity extends AppCompatActivity {
                 return true;
             case R.id.disconnect:
                 // disconnect
-                mTcpClient.stopClient();
+                //mTcpClient.stopClient();
+                mTcpClient.disconnect();
                 mTcpClient = null;
                 // clear the data set
                 mArrayList.clear();
@@ -131,24 +133,25 @@ public class ChatActivity extends AppCompatActivity {
      * AsyncTask for tcpConnecting
      */
     public class ConnectTask extends AsyncTask<String, String, TcpClient> {
-
         @Override
         protected TcpClient doInBackground(String... message) {
 
             //we create a TCPClient object and
-            mTcpClient = new TcpClient(new TcpClient.OnMessageReceived() {
+            mTcpClient = new TcpClient(new TcpClient.ClientCallback() {
                 @Override
                 //here the messageReceived method is implemented
-                public void messageReceived(String message) {
+                public void onReceiveMessage(String message) {
                     //this method calls the onProgressUpdate
                     publishProgress(message);
                 }
 
                 @Override
                 public String getNickName() {
-                    return null;
+                    return "namudak";
                 }
             });
+            mTcpClient.connect();
+            mTcpClient.ClientReceiver(mTcpClient.getSocket(), "Namudak");
             mTcpClient.run();
 
             return null;
@@ -156,12 +159,10 @@ public class ChatActivity extends AppCompatActivity {
 
         @Override
         protected void onProgressUpdate(String... values) {
-            super.onProgressUpdate(values);
-
             //in the arrayList we add the messaged received from server
             ChatItem chatItem= new ChatItem();
             chatItem.setmDateTime(Calendar.getInstance().getTime().toString());
-            chatItem.setmNickName("aaa");
+            chatItem.setmNickName(mTcpClient.getClientCallbak().getNickName());
             chatItem.setIsMe(false);
             chatItem.setmMessage(values[0]);
             mArrayList.add(chatItem);
