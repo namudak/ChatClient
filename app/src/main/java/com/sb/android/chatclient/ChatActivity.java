@@ -51,13 +51,6 @@ public class ChatActivity extends AppCompatActivity {
                 chatItem.setmMessage(message);
                 mArrayList.add(chatItem);
 
-//                ChatItem chatItem2= new ChatItem();
-//                chatItem2.setmDateTime(Calendar.getInstance().getTime().toString());
-//                chatItem2.setmNickName("maria");
-//                chatItem2.setIsMe(false);
-//                chatItem2.setmMessage(message);
-//                mArrayList.add(chatItem2);
-
                 //sends the message to the server
                 if (mTcpClient != null) {
                     mTcpClient.sendMessage(message);
@@ -72,14 +65,11 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onDestroy() {
+        super.onDestroy();
 
-        // disconnect
-        //mTcpClient.stopClient();
         mTcpClient.disconnect();
         mTcpClient = null;
-
     }
 
     @Override
@@ -151,7 +141,7 @@ public class ChatActivity extends AppCompatActivity {
                 }
             });
             mTcpClient.connect();
-            mTcpClient.ClientReceiver(mTcpClient.getSocket(), "Namudak");
+            mTcpClient.ClientReceiver(mTcpClient.getSocket(), "namudak");
             mTcpClient.run();
 
             return null;
@@ -159,6 +149,7 @@ public class ChatActivity extends AppCompatActivity {
 
         @Override
         protected void onProgressUpdate(String... values) {
+
             //in the arrayList we add the messaged received from server
             ChatItem chatItem= new ChatItem();
             chatItem.setmDateTime(Calendar.getInstance().getTime().toString());
@@ -166,6 +157,7 @@ public class ChatActivity extends AppCompatActivity {
             chatItem.setIsMe(false);
             chatItem.setmMessage(values[0]);
             mArrayList.add(chatItem);
+
             // notify the adapter that the data set has changed. This means that new message received
             // from server was added to the list
             mAdapter.notifyDataSetChanged();

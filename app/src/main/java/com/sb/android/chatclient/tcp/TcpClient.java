@@ -19,14 +19,17 @@ public class TcpClient {
 
     private ClientCallback mClientCallback;
 
-    public TcpClient(ClientCallback clientCallback) {
-        mClientCallback = clientCallback;
-    }
+    private DataInputStream mInputStream;
+    private DataOutputStream mOutputStream;
 
     public interface ClientCallback {
         void onReceiveMessage(String message);
 
         String getNickName();
+    }
+
+    public TcpClient(ClientCallback clientCallback) {
+        mClientCallback = clientCallback;
     }
 
     public void connect() {
@@ -37,7 +40,7 @@ public class TcpClient {
         try {
             mSocket = new Socket(serverHost, serverPort);
 
-            String nickName = "Namudak";
+            String nickName = "namudak";
             if (mClientCallback != null) {
                 nickName = mClientCallback.getNickName();
             }
@@ -65,9 +68,6 @@ public class TcpClient {
         return mClientCallback;
     }
 
-    private DataInputStream mInputStream;
-    private DataOutputStream mOutputStream;
-
     public void ClientReceiver(Socket socket, String nickName) {
         try {
             mInputStream = new DataInputStream(socket.getInputStream());
@@ -76,7 +76,7 @@ public class TcpClient {
             mOutputStream.writeUTF(nickName);
             mOutputStream.flush();
 
-            System.out.println("id : " + nickName + "접속 완료");
+            System.out.println("id : " + nickName + "Connection Ok");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -95,10 +95,9 @@ public class TcpClient {
         }
     }
 
-    //@Override
     public void run() {
         try {
-            // 계속 듣기만
+            // Listening server
             while (mInputStream != null) {
                 if (mClientCallback != null) {
                     mClientCallback.onReceiveMessage(mInputStream.readUTF());
@@ -107,7 +106,7 @@ public class TcpClient {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            // 접속 종료시
+            // On disconnecting
             mSocket = null;
 
         }

@@ -45,7 +45,29 @@ public class ClientItemView extends LinearLayout {
 
         mDateTime.setText(aItem.getmDateTime());
         mMessage.setText(aItem.getmNickName() + ":" + aItem.getmMessage());
+
         if(!aItem.isMe) {
+            contentWithBG.setBackgroundResource(R.drawable.in_message_bg);
+
+            LinearLayout.LayoutParams layoutParams =
+                    (LinearLayout.LayoutParams) contentWithBG.getLayoutParams();
+            layoutParams.gravity = Gravity.RIGHT;
+            contentWithBG.setLayoutParams(layoutParams);
+
+            RelativeLayout.LayoutParams lp =
+                    (RelativeLayout.LayoutParams) content.getLayoutParams();
+            lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            content.setLayoutParams(lp);
+
+            layoutParams = (LinearLayout.LayoutParams) mDateTime.getLayoutParams();
+            layoutParams.gravity = Gravity.RIGHT;
+            mDateTime.setLayoutParams(layoutParams);
+            layoutParams = (LinearLayout.LayoutParams) mMessage.getLayoutParams();
+            layoutParams.gravity = Gravity.RIGHT;
+            mMessage.setLayoutParams(layoutParams);
+
+        } else {
             contentWithBG.setBackgroundResource(R.drawable.out_message_bg);
 
             LinearLayout.LayoutParams layoutParams =
@@ -58,13 +80,15 @@ public class ClientItemView extends LinearLayout {
             lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
             lp.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
             content.setLayoutParams(lp);
-            layoutParams = (LinearLayout.LayoutParams) mMessage.getLayoutParams();
-            layoutParams.gravity = Gravity.LEFT;
-            mMessage.setLayoutParams(layoutParams);
 
             layoutParams = (LinearLayout.LayoutParams) mDateTime.getLayoutParams();
             layoutParams.gravity = Gravity.LEFT;
             mDateTime.setLayoutParams(layoutParams);
+            layoutParams = (LinearLayout.LayoutParams) mMessage.getLayoutParams();
+            layoutParams.gravity = Gravity.LEFT;
+            mMessage.setLayoutParams(layoutParams);
+
         }
+
     }
 }
